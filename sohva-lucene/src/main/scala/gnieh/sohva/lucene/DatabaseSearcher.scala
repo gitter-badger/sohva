@@ -16,20 +16,23 @@
 package gnieh.sohva
 package lucene
 
-import rx.lang.scala.Subscription
+import akka.actor.ActorRef
 
-/** An index for one database.
+import scala.concurrent.Future
+
+import org.apache.lucene.analysis.Analyzer
+import org.apache.lucene.search.{
+  Query,
+  TopDocs
+}
+
+/** Interface for making full text search query to a database
  *
  *  @author Lucas Satabin
  */
-class Index(
-  val name: String,
-  val database: String,
-  subscription: Subscription) {
+class DatabaseSearcher(databases: List[String], indexer: ActorRef) {
 
-  /** Closes this index */
-  def close(): Unit =
-    subscription.unsubscribe()
+  def search(query: Query, n: Int): Future[TopDocs] =
+    ???
 
 }
-

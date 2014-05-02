@@ -1,0 +1,25 @@
+/*
+* This file is part of the sohva project.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package gnieh.sohva
+package lucene
+
+/** A score document returned in response to a search query.
+ *  The identifier and optional revision of the matching document is returned
+ *  along with the database name in which it was found
+ *
+ *  @author Lucas Satabin
+ */
+case class ScoreDoc(_id: String, database: String, score: Float) extends IdRev

@@ -138,7 +138,8 @@ object SohvaBuild extends Build {
 
   lazy val luceneDependencies = Seq(
     "com.typesafe.akka" %% "akka-actor" % "2.3.2" % "provided",
-    "org.apache.lucene" % "lucene-core" % "4.7.2"
+    "org.apache.lucene" % "lucene-core" % "4.8.0",
+    "org.apache.lucene" % "lucene-analyzers-common" % "4.8.0"
   )
 
 }
