@@ -31,7 +31,7 @@ object SohvaBuild extends Build {
     scalacOptions in ThisBuild ++= Seq("-deprecation", "-feature", "-language:higherKinds,implicitConversions,reflectiveCalls"))
     settings(publishSettings: _*)
     settings(unidocSettings: _*)
-  ) aggregate(client, testing, entities)
+  ) aggregate(client, testing, entities, cache)
 
   lazy val scalariformSettings = defaultScalariformSettings ++ Seq(
     ScalariformKeys.preferences :=
@@ -150,5 +150,23 @@ object SohvaBuild extends Build {
     "com.github.scala-incubator.io" %% "scala-io-core" % "0.4.3",
     "ch.qos.logback" % "logback-classic" % "1.1.2" % "test"
   )
+
+  lazy val cache = Project(id = "sohva-cache",
+    base = file("sohva-cache")) settings(
+      description := "Caching capabilities for Sohva",
+      version := "0.1.0-SNAPSHOT",
+      libraryDependencies <++= scalaVersion(cacheDependencies _)
+    ) settings(osgiSettings: _*) settings(scalariformSettings: _*) settings(
+      OsgiKeys.exportPackage := Seq(
+        "gnieh.sohva.cache"
+      ),
+      OsgiKeys.additionalHeaders := Map (
+        "Bundle-Name" -> "Sohva Database Caching"
+      ),
+      OsgiKeys.bundleSymbolicName := "org.gnieh.sohva.cache",
+      OsgiKeys.privatePackage := Seq("gnieh.sohva.cache.impl")
+    ) dependsOn(client)
+
+  def cacheDependencies(v: String) = clientDependencies(v)
 
 }

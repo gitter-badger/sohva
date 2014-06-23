@@ -34,6 +34,9 @@ import scala.concurrent.Future
  */
 class CookieSession protected[sohva] (val couch: CouchClient) extends CouchDB with Session with gnieh.sohva.CookieSession[Future] {
 
+  implicit val timeout =
+    couch.timeout
+
   val host =
     couch.host
 

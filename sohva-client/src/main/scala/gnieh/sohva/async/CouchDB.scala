@@ -27,7 +27,8 @@ import spray.http._
 import spray.client.pipelining._
 import spray.httpx.unmarshalling._
 
-import akka.actor._
+import akka.actor.ActorSystem
+import akka.util.Timeout
 
 import net.liftweb.json._
 
@@ -46,6 +47,8 @@ abstract class CouchDB extends gnieh.sohva.CouchDB[Future] with LiftMarshalling 
   implicit def ec: ExecutionContext
 
   def system: ActorSystem
+
+  implicit def timeout: Timeout
 
   val ssl: Boolean
 

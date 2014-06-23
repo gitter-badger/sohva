@@ -38,6 +38,9 @@ class OAuthSession protected[sohva] (
     with gnieh.sohva.OAuthSession[Future]
     with LiftMarshalling {
 
+  implicit val timeout =
+    couch.timeout
+
   val host =
     couch.host
 
