@@ -31,7 +31,7 @@ object SohvaBuild extends Build {
     scalacOptions in ThisBuild ++= Seq("-deprecation", "-feature", "-language:higherKinds,implicitConversions,reflectiveCalls"))
     settings(publishSettings: _*)
     settings(unidocSettings: _*)
-  ) aggregate(client, testing, entities)
+  ) aggregate(client, testing, entities, migration)
 
   lazy val scalariformSettings = defaultScalariformSettings ++ Seq(
     ScalariformKeys.preferences :=
@@ -44,6 +44,7 @@ object SohvaBuild extends Build {
 
   lazy val globalDependencies = Seq(
     "org.scalatest" %% "scalatest" % "2.2.0" % "test",
+    "com.typesafe.akka" %% "akka-actor" % "2.3.3" % "provided",
     "com.typesafe.akka" %% "akka-osgi" % "2.3.3" % "test"
   )
 
@@ -113,7 +114,6 @@ object SohvaBuild extends Build {
         "2.5"
     Seq(
       "io.spray" % s"spray-client$spraySuffix" % sprayVersion,
-      "com.typesafe.akka" %% "akka-actor" % "2.3.3" % "provided",
       "org.gnieh" %% "diffson" % "0.3-SNAPSHOT",
       "com.jsuereth" %% "scala-arm" % "1.4",
       "net.liftweb" %% "lift-json" % jsonVersion,
@@ -151,9 +151,30 @@ object SohvaBuild extends Build {
       OsgiKeys.privatePackage := Seq("gnieh.sohva.async.entities.impl")
     ) dependsOn(client)
 
-  def entitiesDependencies(v: String) = clientDependencies(v) ++ Seq(
+  def entitiesDependencies(v: String) = Seq(
     "com.github.scala-incubator.io" %% "scala-io-core" % "0.4.3",
     "ch.qos.logback" % "logback-classic" % "1.1.2" % "test"
   )
+
+  lazy val migration = Project(id = "sohva-migration",
+    base = file("sohva-migration")) settings(
+      description := "CouchDB document migration manager",
+      version := "0.1.0-SNAPSHOT",
+      libraryDependencies <++= scalaVersion(migrationDependencies _)
+    ) settings(osgiSettings: _*) settings(scalariformSettings: _*) settings(
+      OsgiKeys.exportPackage := Seq(
+        "gnieh.sohva.migration",
+        "gnieh.sohva.async.migration",
+        "gnieh.sohva.sync.migration",
+        "gnieh.sohva.control.migration"
+      ),
+      OsgiKeys.additionalHeaders := Map (
+        "Bundle-Name" -> "Sohva Migration Manager"
+      ),
+      OsgiKeys.bundleSymbolicName := "org.gnieh.sohva.migration",
+      OsgiKeys.privatePackage := Seq()
+    ) dependsOn(client)
+
+  def migrationDependencies(v: String) = Seq()
 
 }
