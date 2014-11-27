@@ -60,6 +60,9 @@ class Database private[sohva] (val couch: CouchDB, val wrapped: ADatabase) exten
     synced(wrapped.exists)
 
   @inline
+  def purge(docs: List[Map[String, List[String]]]): Try[PurgeResult] =
+    synced(wrapped.purge(docs))
+  @inline
   def changes(since: Option[Int] = None, filter: Option[String] = None): ChangeStream =
     wrapped.changes(since, filter)
 

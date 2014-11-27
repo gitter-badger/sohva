@@ -42,6 +42,9 @@ trait CouchDB[Result[_]] {
   /** Returns the couchdb instance information */
   def info: Result[CouchInfo]
 
+  /** Returns the datetime of the server (number of milliseconds since 1st January 1970). */
+  def serverDate: Result[Long]
+
   /** Returns the database on the given couch instance. */
   def database(name: String, credit: Int = 0, strategy: Strategy = BarneyStinsonStrategy): Database[Result]
 

@@ -61,6 +61,9 @@ trait Database[Result[_]] {
   /** Indicates whether this database exists */
   def exists: Result[Boolean]
 
+  /** Purges the given document identifiers at that given revisions in the database. */
+  def purge(docs: List[Map[String, List[String]]]): Result[PurgeResult]
+
   /** Registers to the change stream of this database with potential filter and
    *  since some revision. If no revision is given changes that occurred before the
    *  connection was established are not sent
@@ -201,12 +204,17 @@ final case class InfoResult(
   doc_del_count: Int,
   instance_start_time: String,
   purge_seq: Int,
-  update_seq: Int)
+  update_seq: Int,
+  committed_update_seq: Int)
 
 final case class DocUpdate(
   ok: Boolean,
   id: String,
   rev: String)
+
+final case class PurgeResult(
+  purge_seq: Int,
+  purged: Map[String, List[String]])
 
 private[sohva] final case class BulkDocs[T](rows: List[BulkDocRow[T]])
 

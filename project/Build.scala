@@ -34,7 +34,7 @@ object SohvaBuild extends Build {
       packagedArtifacts :=  Map()
     )
     settings(unidocSettings: _*)
-  ) aggregate(client, testing, entities, dm)
+  ) aggregate(client, testing, entities, dm, maintenance)
 
   lazy val scalariformSettings = defaultScalariformSettings ++ Seq(
     ScalariformKeys.preferences :=
@@ -168,5 +168,24 @@ object SohvaBuild extends Build {
     "ch.qos.logback" % "logback-classic" % "1.1.2" % "test",
     "com.typesafe" % "config" % "1.2.1"
   )
+
+  lazy val maintenance = Project(id = "sohva-maintenance",
+    base = file("sohva-maintenance")) settings(globalSettings: _*) settings(
+      description := "Database maintenance utilities based on Sohva",
+      libraryDependencies ++= maintenanceDependencies
+    ) settings(osgiSettings: _*) settings(scalariformSettings: _*) settings(
+      OsgiKeys.exportPackage := Seq(
+        "gnieh.sohva.maintenance",
+        "gnieh.sohva.async.maintenance",
+        "gnieh.sohva.sync.maintenance",
+        "gnieh.sohva.control.maintenance"
+      ),
+      OsgiKeys.additionalHeaders := Map (
+        "Bundle-Name" -> "Sohva Databse Purge"
+      ),
+      OsgiKeys.bundleSymbolicName := "org.gnieh.sohva.maintenance"
+    ) dependsOn(client, dm)
+
+  lazy val maintenanceDependencies = clientDependencies
 
 }

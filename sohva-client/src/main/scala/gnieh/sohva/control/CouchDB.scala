@@ -54,6 +54,10 @@ abstract class CouchDB private[control] (val wrapped: ACouchDB) extends gnieh.so
     synced(wrapped.info)
 
   @inline
+  def serverDate: Try[Long] =
+    synced(wrapped.serverDate)
+
+  @inline
   def database(name: String, credit: Int = 0, strategy: Strategy = BarneyStinsonStrategy): Database =
     new Database(this, wrapped.database(name, credit, strategy))
 

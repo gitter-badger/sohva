@@ -55,6 +55,13 @@ abstract class CouchDB extends gnieh.sohva.CouchDB[Future] with LiftMarshalling 
         f"Unable to fetch info from $uri"
     ) yield asCouchInfo(json)
 
+  def serverDate: Future[Long] =
+    rawHttp(Head(uri)) map { response =>
+      response.headers.collectFirst {
+        case HttpHeaders.Date(date) => date.clicks
+      }.getOrElse(System.currentTimeMillis)
+    }
+
   def database(name: String, credit: Int = 0, strategy: Strategy = BarneyStinsonStrategy): Database =
     new Database(name, this, serializer, credit, strategy)
 

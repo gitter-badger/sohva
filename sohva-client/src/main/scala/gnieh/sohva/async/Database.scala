@@ -104,6 +104,10 @@ class Database private[sohva] (
     for (h <- couch.optHttp(Head(uri)) withFailureMessage f"exists failed for $uri")
       yield h.isDefined
 
+  def purge(docs: List[Map[String, List[String]]]): Future[PurgeResult] =
+    for(json <- couch.http(Post(uri / "_purge", serializer.toJson(docs))).withFailureMessage(f"purge failed for $uri"))
+      yield serializer.fromJson[PurgeResult](json)
+
   def changes(since: Option[Int] = None, filter: Option[String] = None): ChangeStream =
     new ChangeStream(this, since, filter)
 
